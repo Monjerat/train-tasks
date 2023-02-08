@@ -22,11 +22,30 @@ def convert_radix_digit_to_int(radix_digit, base):
         sys.exit(1)
 
 
-def convert_to_decimal(base, radix_num):
-    decimal_num = 0
-    number_length = len(radix_num)
+def partial_convert_to_decimal(base, radix_num, is_int):
+    part_decimal_num = 0
+    if is_int:
+        first_digit_index = len(radix_num)
+    else:
+        first_digit_index = 0
     for idx, digit in enumerate(radix_num):
-        decimal_num += pow(base, number_length - idx - 1) * convert_radix_digit_to_int(digit, base)
+        part_decimal_num += pow(base, first_digit_index - idx - 1) * convert_radix_digit_to_int(digit, base)
+    return part_decimal_num
+
+
+def convert_to_decimal(base, radix_num):
+    is_negative = False
+    if radix_num[0] == "-":
+        radix_num = radix_num[1:]
+        is_negative = True
+    if "." in radix_num:
+        int_radix_num, frac_radix_num = radix_num.split(sep=".")
+        decimal_num = partial_convert_to_decimal(base, int_radix_num, is_int=True) + \
+                         partial_convert_to_decimal(base, frac_radix_num, is_int=False)
+    else:
+        decimal_num = partial_convert_to_decimal(base, radix_num, is_int=True)
+    if is_negative:
+        decimal_num = -decimal_num
     return decimal_num
 
 
