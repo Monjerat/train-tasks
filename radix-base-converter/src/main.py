@@ -5,12 +5,23 @@ def char_position(letter):
     return ord(letter.casefold()) - 97
 
 
+def base_check(base):
+    # если основание - не целое число, вызываем исключение
+    if not base.isnumeric():
+        raise ValueError
+    base = int(base)
+    # если основание не вписывается в заданный промежуток, вызываем исключение
+    if base <= 1 or base > 36:
+        raise ValueError
+    return base
+
+
 def convert_radix_digit_to_int(radix_digit, base):
     try:
         if radix_digit.isdigit():
             int_digit = int(radix_digit)
         elif radix_digit.isalpha():
-            int_digit = char_position(radix_digit) + 11
+            int_digit = char_position(radix_digit) + 10
         else:
             raise ValueError
 
@@ -41,7 +52,7 @@ def convert_to_decimal(base, radix_num):
     if "." in radix_num:
         int_radix_num, frac_radix_num = radix_num.split(sep=".")
         decimal_num = partial_convert_to_decimal(base, int_radix_num, is_int=True) + \
-                         partial_convert_to_decimal(base, frac_radix_num, is_int=False)
+                      partial_convert_to_decimal(base, frac_radix_num, is_int=False)
     else:
         decimal_num = partial_convert_to_decimal(base, radix_num, is_int=True)
     if is_negative:
@@ -52,13 +63,7 @@ def convert_to_decimal(base, radix_num):
 if __name__ == '__main__':
     try:
         radix_base = input("Введите основание системы счисления (>1 и <=36): ")
-        # если основание - не целое число, вызываем исключение
-        if not radix_base.isnumeric():
-            raise ValueError
-        radix_base = int(radix_base)
-        # если основание не вписывается в заданный промежуток, вызываем исключение
-        if radix_base <= 1 or radix_base > 36:
-            raise ValueError
+        radix_base = base_check(radix_base)
     except ValueError:
         print("Основание должно быть целым числом >1 и <= 36.")
         sys.exit(1)
